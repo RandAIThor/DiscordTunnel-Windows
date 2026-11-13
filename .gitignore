@@ -1,0 +1,11 @@
+.build/
+Windows-x64/
+*.exe
+*.dll
+*.zip
+*.conf
+*.log
+*.key
+*.pem
+.env
+.env.*
