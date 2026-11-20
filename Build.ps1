@@ -1,6 +1,12 @@
 param([switch]$Test, [switch]$Diagnose, [Alias('PrototypeZip')][switch]$Package)
 $ErrorActionPreference = 'Stop'
 
+if ($Package) {
+    . (Join-Path $PSScriptRoot 'ReleaseGate.ps1')
+    Assert-FinalAcceptance
+    $Test = $true
+}
+
 $version = '1.14.4'
 $asset = "sing-box-$version-windows-amd64"
 $digest = '99185D75D314A07DBBA4A130C8AD986CBEB629A07927975636B341CA61F991DF'
@@ -75,7 +81,7 @@ if ($Test -or $Diagnose) {
     }
 }
 
-$documents = @('KURULUM.md','TASARIM-VE-TEST.md','THIRD-PARTY.md')
+$documents = @('KURULUM.md','TASARIM-VE-TEST.md','FINAL-KABUL.md','THIRD-PARTY.md')
 Copy-Item -LiteralPath ($documents | ForEach-Object { Join-Path $PSScriptRoot $_ }) -Destination $stage
 if ($Package) {
     Add-Type -AssemblyName System.IO.Compression.FileSystem

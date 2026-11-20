@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "source_sha256": "F7C9B6A881A07CBA865B44BAE288981AA05B06FD17439698E731C97A5FA9C3C8",
+  "reviewed_on": "2026-11-20",
+  "checks": [
+    {
+      "id": "windows-10-x64",
+      "status": "not_run",
+      "evidence": [
+        "FINAL-KABUL.md#isletim-sistemi"
+      ]
+    },
+    {
+      "id": "windows-11-x64",
+      "status": "passed",
+      "evidence": [
+        "FINAL-KABUL.md#canli-test"
+      ]
+    },
+    {
+      "id": "discord-update-and-module-traffic",
+      "status": "partial",
+      "evidence": [
+        "FINAL-KABUL.md#kapsam"
+      ]
+    },
+    {
+      "id": "non-discord-isolation",
+      "status": "failed",
+      "evidence": [
+        "FINAL-KABUL.md#mimari"
+      ]
+    },
+    {
+      "id": "unknown-process-no-bypass",
+      "status": "failed",
+      "evidence": [
+        "AttributionRepro.cs",
+        "FINAL-KABUL.md#surec-kimligi-kaybi"
+      ]
+    },
+    {
+      "id": "system-dns-isolation",
+      "status": "failed",
+      "evidence": [
+        "FINAL-KABUL.md#mimari"
+      ]
+    },
+    {
+      "id": "dns-failure-diagnosis-30s",
+      "status": "not_run",
+      "evidence": [
+        "FINAL-KABUL.md#dns"
+      ]
+    },
+    {
+      "id": "discord-client-doh",
+      "status": "partial",
+      "evidence": [
+        "FINAL-KABUL.md#dns"
+      ]
+    },
+    {
+      "id": "wifi-transition-with-voice",
+      "status": "passed",
+      "evidence": [
+        "FINAL-KABUL.md#canli-test"
+      ]
+    },
+    {
+      "id": "discord-login",
+      "status": "partial",
+      "evidence": [
+        "FINAL-KABUL.md#kapsam"
+      ]
+    },
+    {
+      "id": "discord-two-way-voice",
+      "status": "passed",
+      "evidence": [
+        "FINAL-KABUL.md#canli-test"
+      ]
+    },
+    {
+      "id": "live-ipv4-ipv6",
+      "status": "partial",
+      "evidence": [
+        "FINAL-KABUL.md#kapsam"
+      ]
+    },
+    {
+      "id": "paired-idle-upload-latency",
+      "status": "partial",
+      "evidence": [
+        "FINAL-KABUL.md#gecikme"
+      ]
+    },
+    {
+      "id": "tun-crash-recovery",
+      "status": "partial",
+      "evidence": [
+        "FINAL-KABUL.md#mimari"
+      ]
+    },
+    {
+      "id": "clean-removal",
+      "status": "not_run",
+      "evidence": [
+        "FINAL-KABUL.md#mimari"
+      ]
+    }
+  ]
+}

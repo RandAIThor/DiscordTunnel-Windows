@@ -1,5 +1,9 @@
 # Discord Tunnel prototipi
 
+## Güncel final kabul sonucu — 20 Kasım 2026
+
+**Final kabulü başarısız; sürüm taslakta.** Yeni canlı ses, Wi-Fi, gerçek DoH/HTTPS ve üç eşleştirilmiş yük testiyle birlikte süreç kimliği kaybının doğrudan çıkışa neden olduğu gerçek adversarial test [FINAL-KABUL.md](FINAL-KABUL.md) içinde kayıtlıdır. Başarısız test korunur. Windows 10, sistem DNS izolasyonu ve güvenilir seçici veri yolu tamamlanmadı. Aşağıdaki eski kayıtlar tarihsel kanıttır; güncel kabulün yerine geçmez.
+
 ## 0.2.0 kapsam güncellemesi — 20 Kasım 2026
 
 Standart Discord kurulumunun ana uygulaması ve Update.exe dosyasının yanında sayısal app-* sürüm klasörlerinin altındaki tüm EXE yardımcıları eşleştirilir. Buna ses, GPU kodlayıcı, ekran paylaşımı kancaları ve sistem yardımcıları dahildir. Kural çalışma sırasında oluşturulan yeni sürüm yollarını da kapsar. PTB, Canary ve taşınabilir kurulumlar bu sürümün kapsamına alınmadı.
