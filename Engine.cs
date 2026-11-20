@@ -171,7 +171,7 @@ namespace DiscordTunnelPrototype
         private static void Verify(string path, string expected)
         {
             if (!File.Exists(path))
-                throw new InvalidDataException("Motor dosyaları bulunamadı. KURULUM.md içindeki Motoru-Hazirla.ps1 adımını uygula.");
+                throw new InvalidDataException("Motor dosyaları bulunamadı. ZIP’in tamamını aynı klasöre çıkart.");
             using (var stream = File.OpenRead(path))
             using (var sha = SHA256.Create())
             {

@@ -12,7 +12,7 @@ namespace DiscordTunnelPrototype
 {
     internal static class TunnelConfig
     {
-        internal const string AdapterName = "DiscordTunnel-Prototype";
+        internal const string AdapterName = "DiscordTunnel";
         private const string Direct = "direct";
         private const string Tunnel = "discord-wireguard";
 
@@ -24,7 +24,7 @@ namespace DiscordTunnelPrototype
         internal static string ProcessPattern(string root)
         {
             return @"(?i)^" + Regex.Escape(root) +
-                @"\\(?:Discord\.exe|Update\.exe|app-[0-9]+\.[0-9]+(?:\.[0-9]+){0,2}\\(?:Discord\.exe|updater_launcher\.exe))$";
+                @"\\(?:Discord\.exe|Update\.exe|app-[0-9]+\.[0-9]+(?:\.[0-9]+){0,2}\\(?:[^\\/:*?""<>|\r\n]+\\)*[^\\/:*?""<>|\r\n]+\.exe)$";
         }
 
         internal static string[] FindDiscord(string root)
@@ -59,7 +59,7 @@ namespace DiscordTunnelPrototype
             var allowed = Prefixes(Required(fields, "Peer.AllowedIPs"));
             if (!addresses.Any(address => IsIPv6(address)) || !addresses.Any(address => !IsIPv6(address))
                 || !allowed.Contains("0.0.0.0/0") || !allowed.Contains("::/0"))
-                throw new InvalidDataException("Bu çift yığın prototipi IPv4 ve IPv6 tünel adresleri ile 0.0.0.0/0 ve ::/0 ister.");
+                throw new InvalidDataException("Profil IPv4 ve IPv6 tünel adresleri ile 0.0.0.0/0 ve ::/0 içermeli.");
 
             string host;
             int port;
@@ -108,7 +108,7 @@ namespace DiscordTunnelPrototype
             {
                 "Interface.PrivateKey", "Interface.Address", "Interface.MTU", "Interface.DNS",
                 "Peer.PublicKey", "Peer.PresharedKey", "Peer.AllowedIPs", "Peer.Endpoint",
-                "Peer.PersistentKeepalive", "Peer.Reserved"
+                "Peer.PersistentKeepalive", "Peer.Reserved", "Peer.AllowedApps", "Peer.DisallowedApps"
             };
             var fields = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             var section = "";

@@ -60,11 +60,20 @@ namespace DiscordTunnelPrototype
             var root = @"C:\Users\örnek+ test\AppData\Local\Discord";
             var pattern = new Regex(TunnelConfig.ProcessPattern(root), RegexOptions.CultureInvariant);
             foreach (string path in new[] { @"\Update.exe", @"\Discord.exe", @"\app-1.0.9267\Discord.exe",
-                @"\App-1.0.9268\DISCORD.EXE", @"\app-1.0.10000\updater_launcher.exe" })
+                @"\App-1.0.9268\DISCORD.EXE", @"\app-1.0.9269\Discord.exe",
+                @"\app-1.0.10000\updater_launcher.exe",
+                @"\app-1.0.9269\modules\discord_voice-1\discord_voice\audio_effects_helper.exe",
+                @"\app-1.0.9269\modules\discord_voice-1\discord_voice\gpu_encoder_helper.exe",
+                @"\app-1.0.9269\modules\discord_hook-1\discord_hook\1843b8dd948b30\DiscordHookHelper64.exe",
+                @"\app-1.0.10001\modules\discord_utils-2\discord_utils\DiscordSystemHelper.exe" })
                 Expect(pattern.IsMatch(root + path), path);
             foreach (string path in new[] { @"\Other\Discord.exe", @"\app-abc\Discord.exe",
-                @"\app-1.0.9268\Update.exe", @"\app-1.0.9268\Discord.exe.bak", @"-Other\Update.exe" })
+                @"\app-1.0.9268\Discord.exe.bak", @"-Other\Update.exe",
+                @"\Downloads\curl.exe", @"\app-1.0.9269\modules\voice\helper.dll",
+                @"\app-1.0.9269\modules\voice\helper.exe:stream" })
                 Expect(!pattern.IsMatch(root + path), path);
+            Expect(!pattern.IsMatch(@"C:\Users\other\AppData\Local\Discord\app-1.0.9269\Discord.exe"), "Other user");
+            Expect(!pattern.IsMatch(@"C:\Downloads\Discord.exe"), "Same name outside Discord");
             Console.WriteLine("OK · paired and future versions, updater and negative path examples");
 
             if (Directory.Exists(TunnelConfig.DiscordRoot))
@@ -84,6 +93,9 @@ namespace DiscordTunnelPrototype
             string config = TunnelConfig.Build(sample, TunnelConfig.DiscordRoot);
             Expect(config.IndexOf("192.0.2.53", StringComparison.Ordinal) < 0, "Profile DNS isolation");
             Expect(config.IndexOf("\"dns_mode\":\"disabled\"", StringComparison.Ordinal) >= 0, "TUN DNS isolation");
+            var wireSockProfile = sample + "AllowedApps=C:\\Windows\\System32\\curl.exe\nDisallowedApps=Discord.exe\n";
+            Expect(TunnelConfig.Build(wireSockProfile, TunnelConfig.DiscordRoot) == config,
+                "Imported WireSock application lists must not expand or remove the Discord scope");
             using (var engine = new Engine(config, true, null))
                 Expect(Bounded(engine.Exit) == 0, "Pinned sing-box accepts generated TUN config: " + engine.Failure);
             foreach (string change in new[] { sample.Replace(", ::/0", ""), sample + "\n[Peer]\n",

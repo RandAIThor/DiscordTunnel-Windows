@@ -30,7 +30,7 @@ namespace DiscordTunnelPrototype
         private const string HandshakeReceived = "WireGuard eşinden el sıkışma yanıtı alındı. Discord oturumu ve ses ayrı doğrulanmalı.";
 
         [STAThread]
-        private static void Main()
+        private static void Main(string[] args)
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -42,12 +42,12 @@ namespace DiscordTunnelPrototype
             using (var instance = new Mutex(true, admin ? @"Local\DiscordTunnelPrototype.Admin" : @"Local\DiscordTunnelPrototype", out created))
             {
                 if (created)
-                    using (var tray = new Tray(admin))
+                    using (var tray = new Tray(admin, args.Contains("--start")))
                         Application.Run(tray);
             }
         }
 
-        private Tray(bool admin)
+        private Tray(bool admin, bool startRequested)
         {
             this.admin = admin;
             // Capture a WinForms synchronization context before handling asynchronous menu actions.
@@ -55,7 +55,7 @@ namespace DiscordTunnelPrototype
             var menu = new ContextMenuStrip();
             status = new ToolStripMenuItem("Tünel kapalı");
             status.Click += (sender, args) => ShowStatus();
-            start = new ToolStripMenuItem(admin ? "Profil seç ve deneysel tüneli başlat" : "Başlatmak için yönetici onayı iste");
+            start = new ToolStripMenuItem(admin ? "Profil seç ve tüneli başlat" : "Tüneli başlat");
             start.Click += async (sender, args) => await Start();
             stop = new ToolStripMenuItem("Tüneli durdur");
             stop.Click += async (sender, args) => await Stop(false);
@@ -64,10 +64,12 @@ namespace DiscordTunnelPrototype
             var exit = new ToolStripMenuItem("Çıkış");
             exit.Click += async (sender, args) => await Stop(true);
             menu.Items.AddRange(new ToolStripItem[] { status, new ToolStripSeparator(), start, stop, diagnose, exit });
-            icon = new NotifyIcon { Icon = SystemIcons.Application, Text = "Discord Tunnel Prototipi", ContextMenuStrip = menu, Visible = true };
+            icon = new NotifyIcon { Icon = SystemIcons.Application, Text = "Discord Tunnel", ContextMenuStrip = menu, Visible = true };
             icon.DoubleClick += (sender, args) => ShowStatus();
             NetworkChange.NetworkAddressChanged += NetworkChanged;
             UpdateMenu();
+            if (admin && startRequested)
+                dispatcher.BeginInvoke(new Action(async () => await Start()));
         }
 
         private async Task Start()
@@ -78,7 +80,7 @@ namespace DiscordTunnelPrototype
             {
                 try
                 {
-                    using (Process.Start(new ProcessStartInfo(Application.ExecutablePath) { UseShellExecute = true, Verb = "runas" })) { }
+                    using (Process.Start(new ProcessStartInfo(Application.ExecutablePath, "--start") { UseShellExecute = true, Verb = "runas" })) { }
                     ExitThread();
                 }
                 catch (Win32Exception exception)
@@ -318,12 +320,12 @@ namespace DiscordTunnelPrototype
         {
             status.Text = text;
             if (notify)
-                icon.ShowBalloonTip(6000, "Discord Tunnel Prototipi", text, ToolTipIcon.Info);
+                icon.ShowBalloonTip(6000, "Discord Tunnel", text, ToolTipIcon.Info);
         }
 
         private void ShowStatus()
         {
-            MessageBox.Show(status.Text, "Discord Tunnel Prototipi", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(status.Text, "Discord Tunnel", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         protected override void Dispose(bool disposing)

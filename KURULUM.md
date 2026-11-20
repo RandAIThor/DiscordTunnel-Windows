@@ -1,14 +1,21 @@
-# Discord Tunnel Prototipi
+# Discord Tunnel 0.2.0
 
-Deneme hedefi Windows 10 ve 11 x64 üzerinde kurulu resmî Discord masaüstü uygulamasıdır. Bu paket, canlı tünel kabul testleri bekleyen bir prototiptir. Geçici sistem rotaları eklediği için ayrı bir Windows deneme ortamında ve başka VPN devrede değilken çalıştır.
+ZIP’in tamamını yerel bir klasöre çıkart ve **DiscordTunnel.exe** dosyasını aç. Ağ motoru pakete dahildir.
 
-1. ZIP’in tamamını yerel bir klasöre çıkart. **Motoru-Hazirla.ps1** dosyasını PowerShell ile çalıştır. Bu tek seferlik adım, yönetici yetkisi istemeden sing-box arşivini resmî sürümden indirip SHA-256 değerini doğrular. Motoru hazırladıktan sonra **DiscordTunnel-Prototype.exe** dosyasını aç.
-2. Bildirim alanındaki simgeye sağ tıkla. **Başlatmak için yönetici onayı iste** seçeneğini seç. Windows onayı açıldığında kararı Windows penceresinden ver. Yönetici onayı aynı Windows hesabını yükseltmelidir. Discord kurulumu, profili seçen hesabın standart yerel klasöründe aranır.
-3. Yükseltilmiş uygulamanın simgesinden **Profil seç ve deneysel tüneli başlat** seçeneğini aç. Kendi tek eşli WireGuard profilini seç. Profil hem IPv4 hem IPv6 tünel adresleri ve **AllowedIPs** için **0.0.0.0/0, ::/0** içermelidir. Sağlayıcının standart profilini kullan. WireSock’a özgü uygulama alanları ve profil içindeki komutlar desteklenmez. WARP erişimi bu paketle doğrulanmayı bekliyor.
-4. Durumu simgeden izle. **TUN hazır** iletisi Windows bağdaştırıcısının açıldığını, **el sıkışma yanıtı** ise WireGuard eşinden yanıt geldiğini bildirir. Discord’u kullanarak bağlantıyı tetikle. Oturum açma ve ses bağlantısını ayrıca dene.
-5. Bağlantı takılırsa **Windows DNS, port 53 ve DoH testi** seçeneğini aç. Test Windows çözümleyicisini, 1.1.1.1’e UDP/53 ve HTTPS üzerinden gönderilen Discord alan adı sorgularını karşılaştırır. Windows çözümleyicisi önbellekten veya kendi etkin DoH ayarından cevap verebilir. Bu test Discord’un kullanacağı DNS’i değiştirmez.
-6. **Tüneli durdur** veya **Çıkış** ile kapat. Kaldırmak için uygulamadan çıktıktan ve normal bağlantıyı kontrol ettikten sonra çıkarttığın prototip klasörünü kaldır.
+1. Bildirim alanındaki simgeye sağ tıkla ve **Tüneli başlat** seçeneğini seç. Windows yönetici onayını ver.
+2. Açılan pencereden kendi WireGuard profilini seç. Eski Discord-WARP profili de kullanılabilir. Profildeki uygulama listeleri yerine bu uygulamanın Discord kapsamı uygulanır.
+3. Profil hem IPv4 hem IPv6 tünel adresleri ve **AllowedIPs** için **0.0.0.0/0, ::/0** içermelidir.
+4. **TUN hazır** mesajı Windows bağdaştırıcısının açıldığını bildirir. Discord’u kullanınca alınan **WireGuard eşinden yanıt** mesajı, tünel sunucusunun yanıt verdiğini gösterir.
+5. Çıkmak için simgeden **Tüneli durdur** veya **Çıkış** seç. Uygulama kapandıktan sonra klasörünü kaldırarak silebilirsin.
 
-Uygulama Discord’u kurmaz, güncellemez veya yamalamaz. Kişisel profil yalnız çalışma sırasında okunur ve motorun standart girdisine aktarılır. Prototip profil kopyası veya günlük dosyası oluşturmaz. Windows TUN, doğrudan çıkan başka uygulamaların trafiğini de işleyebilir.
+Kapsam, bu Windows hesabının standart **%LOCALAPPDATA%\Discord** kurulumudur. Kök dizindeki Discord ve Update uygulamaları, **app-*** sürüm klasörleri ve onların altındaki bütün EXE yardımcıları kapsanır. Ses ve ekran paylaşımı yardımcıları, birden fazla kurulu sürüm ve uygulama açıkken oluşan yeni sürüm yolları bu kuralla seçilir.
 
-Motor, sabitlenmiş sing-box 1.14.4 Windows x64 sürümüdür. Motor hazırlanınca lisans bildirimi **engine/LICENSE** dosyasında bulunur. Prototip ve upstream motor EXE dosyaları Authenticode imzası taşımıyor. [Motor sürümü ve kaynak kodu](https://github.com/SagerNet/sing-box/releases/tag/v1.14.4)
+Diğer süreçler doğrudan çıkışa yönlendirilir. Windows TUN çalışırken bu trafik de motor tarafından işlenebilir. PTB, Canary ve taşınabilir Discord kurulumları bu sürümün kapsamına dahil değildir.
+
+Başka bir VPN aynı anda açıksa rotalar çakışabilir. WireSock bağlantısını bu uygulamayla canlı test yapmadan önce durdur. Uygulama Discord dosyalarını değiştirmez.
+
+Paket kişisel profil veya anahtar içermez. Seçilen profil çalışma sırasında okunur ve bellekte motora aktarılır. Uygulama profil kopyası veya günlük oluşturmaz.
+
+**Windows DNS, port 53 ve DoH testi** yalnız teşhis içindir. Windows DNS sunucularını değiştirmez. TUN motoru açılış ve normal kapanışta DNS önbelleğini temizleyebilir.
+
+Windows 11 üzerinde motor testleri yapılmıştır. Windows 10, gerçek Discord ses bağlantısı, iki ağ arasında yeni motorun geçişi ve yük altında karşılaştırmalı gecikme kabulü sürmektedir. EXE dosyalarının Authenticode imzası yoktur. Güncel sonuçlar **TASARIM-VE-TEST.md** dosyasındadır.

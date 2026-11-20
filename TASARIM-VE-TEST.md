@@ -1,5 +1,17 @@
 # Discord Tunnel prototipi
 
+## 0.2.0 kapsam güncellemesi — 20 Kasım 2026
+
+Standart Discord kurulumunun ana uygulaması ve Update.exe dosyasının yanında sayısal app-* sürüm klasörlerinin altındaki tüm EXE yardımcıları eşleştirilir. Buna ses, GPU kodlayıcı, ekran paylaşımı kancaları ve sistem yardımcıları dahildir. Kural çalışma sırasında oluşturulan yeni sürüm yollarını da kapsar. PTB, Canary ve taşınabilir kurulumlar bu sürümün kapsamına alınmadı.
+
+Eski WireSock profilleri giriş olarak okunabilir. Bu profillerdeki AllowedApps ve DisallowedApps alanları yeni uygulamanın süreç kapsamını değiştirmez. Anahtarlar ve tünel bağlantı değerleri kullanıcı profilinden alınır.
+
+Bu sürümde, Windows yönetici onayından hemen sonra profil penceresi açılır. Windows paketi motoru ve lisans bildirimlerini içerir. Paket yalnız izin verilen dosyalardan üretilir.
+
+Yerel doğrulama, 9268/9269 ve sonraki sürüm yollarını, iç içe modül yardımcılarını, harici dosya yollarının reddini, eski profil filtrelerinin etkisizliğini ve gerçek WireGuard TCP/UDP IPv4/IPv6 alışverişini kapsar. Ayrı testte gerçek uygulama süreci Discord kapsamının dışındayken, WireGuard sunucusu bulunmadan dört TCP/UDP IPv4/IPv6 akışı doğrudan gidip döndü. Windows 11 üzerinde bu testler geçti.
+
+Windows 10, Discord oturum açma ve ses, canlı iki ağ geçişi ve yük altındaki karşılaştırmalı gecikme testleri açık. Son paket güncel çalışmadır. Üretim kabulünün tamamlandığı iddia edilmez.
+
 ## Mimari seçenekleri ve karar
 
 İlk aday sing-box 1.14.4 ve WireGuard. Windows TUN, IPv4 ve IPv6 TCP/UDP bağlantılarını yakalar. Motor, standart Discord kökü altındaki Discord ve güncelleyici yollarını WireGuard eşine yönlendirir. Diğer trafik fiziksel arayüz üzerinden doğrudan çıkışa yönlendirilir. Sistem genelindeki rotalar TUN çalışırken etkilenebileceği için diğer uygulamaların motoru tamamen atlaması bu modelde garanti edilemez. `dns_mode: disabled` ve `strict_route: false` ile TUN için yerel DNS ataması ve genel DNS engellemesi kapatılır. [TUN seçenekleri](https://sing-box.sagernet.org/configuration/inbound/tun/) · [Süreç yolu eşleme](https://sing-box.sagernet.org/configuration/route/rule/) · [WireGuard endpoint](https://sing-box.sagernet.org/configuration/endpoint/wireguard/)

@@ -1,4 +1,4 @@
-param([switch]$Test, [switch]$Diagnose, [switch]$PrototypeZip)
+param([switch]$Test, [switch]$Diagnose, [Alias('PrototypeZip')][switch]$Package)
 $ErrorActionPreference = 'Stop'
 
 $version = '1.14.4'
@@ -20,12 +20,20 @@ $upstream = Join-Path $build $asset
 foreach ($name in 'sing-box.exe','libcronet.dll','LICENSE') {
     Copy-Item -LiteralPath (Join-Path $upstream $name) -Destination $engine
 }
+$copying = Join-Path $build 'COPYING'
+if (!(Test-Path -LiteralPath $copying)) {
+    Invoke-WebRequest 'https://www.gnu.org/licenses/gpl-3.0.txt' -OutFile $copying -TimeoutSec 15
+}
+if ((Get-FileHash -LiteralPath $copying).Hash -ne '3972DC9744F6499F0F9B2DBF76696F2AE7AD8AF9B23DDE66D6AF86C9DFB36986') {
+    throw 'GPL license text did not match the expected SHA-256.'
+}
+Copy-Item -LiteralPath $copying -Destination $engine
 
 $compiler = Join-Path $env:windir 'Microsoft.NET\Framework64\v4.0.30319\csc.exe'
 $source = @('TunnelConfig.cs','Engine.cs','Tray.cs') | ForEach-Object { Join-Path $PSScriptRoot $_ }
 $refs = @('/r:System.Net.Http.dll','/r:System.Web.Extensions.dll','/r:System.Windows.Forms.dll','/r:System.Drawing.dll')
 $common = @('/nologo','/codepage:65001','/warnaserror','/platform:x64') + $refs
-$exe = Join-Path $stage 'DiscordTunnel-Prototype.exe'
+$exe = Join-Path $stage 'DiscordTunnel.exe'
 & $compiler @common /target:winexe "/out:$exe" @source
 if ($LASTEXITCODE -ne 0) { throw 'Uygulama derlenemedi.' }
 
@@ -67,17 +75,20 @@ if ($Test -or $Diagnose) {
     }
 }
 
-$documents = @('KURULUM.md','TASARIM-VE-TEST.md','Motoru-Hazirla.ps1')
+$documents = @('KURULUM.md','TASARIM-VE-TEST.md','THIRD-PARTY.md')
 Copy-Item -LiteralPath ($documents | ForEach-Object { Join-Path $PSScriptRoot $_ }) -Destination $stage
-if ($PrototypeZip) {
+if ($Package) {
     Add-Type -AssemblyName System.IO.Compression.FileSystem
-    $destination = Join-Path (Split-Path $PSScriptRoot -Parent) 'DiscordTunnel-Prototype-Windows-x64.zip'
-    $allowed = @('DiscordTunnel-Prototype.exe') + $documents
-    $package = [System.IO.Compression.ZipFile]::Open($destination, 'Create')
+    $distribution = Join-Path $PSScriptRoot 'dist'
+    New-Item -ItemType Directory -Path $distribution -Force | Out-Null
+    $destination = Join-Path $distribution 'DiscordTunnel-0.2.0-Windows-x64.zip'
+    $allowed = @('DiscordTunnel.exe') + $documents + @('engine/sing-box.exe','engine/libcronet.dll','engine/LICENSE','engine/COPYING')
+    if (Test-Path -LiteralPath $destination) { throw 'Package already exists. Choose a new release version or move the earlier artifact.' }
+    $zipArchive = [System.IO.Compression.ZipFile]::Open($destination, 'Create')
     try {
         foreach ($item in $allowed) {
-            $null = [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($package, (Join-Path $stage $item), $item)
+            $null = [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zipArchive, (Join-Path $stage $item), $item)
         }
-    } finally { $package.Dispose() }
+    } finally { $zipArchive.Dispose() }
     Get-FileHash -LiteralPath $destination | Format-List Hash,Path
 }

@@ -1,4 +1,5 @@
 .build/
+dist/
 Windows-x64/
 *.exe
 *.dll
