@@ -1,12 +1,12 @@
 # Discord Tunnel Windows 0.2.0
 
-**0.2.0 yayın kararı:** Kullanıcı mevcut paketin bilinen sınırlamalarıyla yayımlanmasını ve geri bildirimlere göre güncellenmesini onayladı. [Yayın kararı](YAYIN-KARARI.md). Teknik test sonuçları ve açık koşullar [incelemede](FINAL-KABUL.md) korunur.
+**0.2.0 yayımlandı:** [Windows x64 ZIP'i indir](https://github.com/RandAIThor/DiscordTunnel-Windows/releases/download/v0.2.0/DiscordTunnel-0.2.0-Windows-x64.zip) · [Sürüm açıklaması ve testler](https://github.com/RandAIThor/DiscordTunnel-Windows/releases/tag/v0.2.0). Kullanıcı mevcut paketin bilinen sınırlamalarıyla yayımlanmasını ve geri bildirimlere göre güncellenmesini onayladı. [Yayın kararı](YAYIN-KARARI.md). Teknik test sonuçları ve açık koşullar [incelemede](FINAL-KABUL.md) korunur.
 
 Windows bildirim alanından yönetilen, kurulu Discord masaüstü uygulaması ve kendi güncelleyicisi için bir WireGuard tüneli. Ağ motoru sing-box 1.14.4. Hedef Windows 10 ve 11 x64.
 
 Süreç kuralı sürüm numarasına sabitlenmez. Standart Discord kökündeki ana uygulama ve güncelleyici ile bütün sayısal app-* sürüm klasörlerinin altındaki EXE yardımcıları seçilir. Böylece ses, ekran paylaşımı, modül yardımcıları ve sonraki sürüm klasörleri otomatik kapsanır. Başka dizinlerdeki Discord.exe, Update.exe veya yardımcı dosyalar eşleşmez. Diğer süreçlerin varsayılan çıkışı doğrudandır. TUN modeli bu doğrudan trafiği de işleyebilir.
 
-Yerel Windows derlemesi motoru içerir. **DiscordTunnel.exe** dosyasını aç ve bildirim alanından tüneli başlat. Kişisel WireGuard profilini kendi bilgisayarında seç. Windows yönetici onayından sonra profil penceresi otomatik açılır. [Kullanım](KURULUM.md)
+Windows ZIP'i motoru içerir. ZIP'in tamamını çıkartıp **DiscordTunnel.exe** dosyasını aç ve bildirim alanından tüneli başlat. Kişisel WireGuard profilini kendi bilgisayarında seç. Windows yönetici onayından sonra profil penceresi otomatik açılır. [Kullanım](KURULUM.md)
 
 ## Codex ile devam
 
