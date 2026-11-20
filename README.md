@@ -1,6 +1,6 @@
 # Discord Tunnel Windows 0.2.0
 
-**Final paket yayımlanmadı.** Mevcut TUN motoru süreç kimliği kaybındaki kaçış ve sistem DNS etkisi nedeniyle final kabulünden kaldı. 0.2.0 GitHub sürümü taslakta tutuluyor. Gerçek test sonuçları ve açık koşullar: [Final kabul incelemesi](FINAL-KABUL.md).
+**0.2.0 yayın kararı:** Kullanıcı mevcut paketin bilinen sınırlamalarıyla yayımlanmasını ve geri bildirimlere göre güncellenmesini onayladı. [Yayın kararı](YAYIN-KARARI.md). Teknik test sonuçları ve açık koşullar [incelemede](FINAL-KABUL.md) korunur.
 
 Windows bildirim alanından yönetilen, kurulu Discord masaüstü uygulaması ve kendi güncelleyicisi için bir WireGuard tüneli. Ağ motoru sing-box 1.14.4. Hedef Windows 10 ve 11 x64.
 
@@ -12,7 +12,7 @@ Yerel Windows derlemesi motoru içerir. **DiscordTunnel.exe** dosyasını aç ve
 
 20 Kasım canlı denemesinde Windows 11 üzerinde gerçek Discord TCP/UDP süreç seçimi ve kullanıcı doğrulamasıyla iki yönlü ses gözlendi. Aktif ses oturumunda iki Wi-Fi arasında gidiş/dönüş tamamlandı. Ofis Wi-Fi'sinde üç eşleştirilmiş boşta/yük altında HTTPS turu çalıştırıldı. Mobil ağdaki tekil ping değerleri performans kabulü sayılmadı. Yeni TUN normal kapanışta kaldırıldı ve önceki bağlantı geri getirildi.
 
-Gerçek adversarial test, süreç kimliği kaybolan datagramın doğrudan çıkabildiğini gösterdi. Bu açık, sistem DNS etkisi, seçici yakalama mimarisi ve Windows 10 kabulü çözülmeden final yayımlanmaz. WFP ve hazır imzalı sürücü seçeneğinin sınırları [incelemede](FINAL-KABUL.md#mimari) açıklanır. Tarihsel ölçümler [tasarım ve test kaydında](TASARIM-VE-TEST.md) korunur.
+Gerçek adversarial test, süreç kimliği kaybolan datagramın doğrudan çıkabildiğini gösterdi. Bu bulgu ve sistem DNS etkisi bilinen sınırlamalardır; Windows 10 kabulü tamamlanmadı. Kullanıcı mevcut sürümün bu test kapsamıyla yayımlanmasını istedi. WFP ve hazır imzalı sürücü seçeneğinin sınırları [incelemede](FINAL-KABUL.md#mimari) açıklanır. Tarihsel ölçümler [tasarım ve test kaydında](TASARIM-VE-TEST.md) korunur.
 
 ## Derleme ve yerel kontrol
 

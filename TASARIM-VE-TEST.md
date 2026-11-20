@@ -2,7 +2,7 @@
 
 ## Güncel final kabul sonucu — 20 Kasım 2026
 
-**Final kabulü başarısız; sürüm taslakta.** Yeni canlı ses, Wi-Fi, gerçek DoH/HTTPS ve üç eşleştirilmiş yük testiyle birlikte süreç kimliği kaybının doğrudan çıkışa neden olduğu gerçek adversarial test [FINAL-KABUL.md](FINAL-KABUL.md) içinde kayıtlıdır. Başarısız test korunur. Windows 10, sistem DNS izolasyonu ve güvenilir seçici veri yolu tamamlanmadı. Aşağıdaki eski kayıtlar tarihsel kanıttır; güncel kabulün yerine geçmez.
+**Teknik kabul sonucu başarısız; sonraki kullanıcı yayın onayı ayrıdır.** Yeni canlı ses, Wi-Fi, gerçek DoH/HTTPS ve üç eşleştirilmiş yük testiyle birlikte süreç kimliği kaybının doğrudan çıkışa neden olduğu gerçek adversarial test [FINAL-KABUL.md](FINAL-KABUL.md) içinde kayıtlıdır. Başarısız test korunur. Windows 10, sistem DNS izolasyonu ve güvenilir seçici veri yolu tamamlanmadı. Kullanıcı mevcut paketin bu sınırlamalarla yayımlanmasını onayladı: [Yayın kararı](YAYIN-KARARI.md). Aşağıdaki eski kayıtlar tarihsel kanıttır; güncel kabulün yerine geçmez.
 
 ## 0.2.0 kapsam güncellemesi — 20 Kasım 2026
 

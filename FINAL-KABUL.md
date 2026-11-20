@@ -1,6 +1,6 @@
 # Final kabul incelemesi — 20 Kasım 2026
 
-**Sonuç: final kabulü başarısız. Yeni final ZIP üretilmedi ve GitHub taslağı yayımlanmadı.**
+**Teknik inceleme sonucu: final kabulü başarısız.** İnceleme sırasında yeni ZIP oluşturulmadı ve sürüm yayımlanmadı. Kullanıcının daha sonra mevcut paketi bilinen sınırlamalarıyla yayımlama kararı [YAYIN-KARARI.md](YAYIN-KARARI.md) içindedir; aşağıdaki test sonuçları bu kararla değişmez.
 
 Uygulamanın veri yolunda `5cc4dce` sürümündeki Engine.cs, TunnelConfig.cs ve Tray.cs kullanıldı. Motor sing-box 1.14.4. Bu inceleme üretim motorundaki açıkları giderdiğini iddia etmez. Yeni kaynaklar, tekrar üretilebilir test araçları ve eksik kabul kaydıyla paket oluşturmayı engelleyen kontroldür. Ham günlükler, profil ve kişisel ağ bilgileri depoya alınmaz.
 
@@ -100,4 +100,4 @@ Canlı test için `Build-LiveAcceptance.ps1` ayrı, pakete alınmayan harness'ı
 
 `Build.ps1 -Package`, `RELEASE-ACCEPTANCE.json` içindeki zorunlu bütün kriterler geçmeden arşiv oluşturmaz. Kaynak parmak izi değiştiğinde eski kayıt geçersizdir; başarısız satırı silmek veya atlamak kabulü açmaz. Kayıt incelemeye yardımcıdır; elle yazılan “passed” ifadesi tek başına test kanıtı değildir. Bu kontrolün 15 sentetik politika testi, uygulamanın 15 kabul testini geçtiği anlamına gelmez.
 
-GitHub v0.2.0 taslağındaki eski ZIP korunur: 32,935,917 bayt, SHA256 `F8B1A319B22CB5CA1DE3D51A4FB05893108FF25CB6CB086CF7BCF06C7F05DD20`. Bu ZIP final kabulü tamamlanmış paket değildir. Eski ayrı Windows ZIP'inin SHA256 değeri `2D1637B248909190149957CDB89DD9AA0BCEE8CBD9A7BB8B3454CBBE603B3ED8` olarak korundu. Final paket oluşturulmadığından yeni anonim indirme bağlantısı doğrulanmadı.
+İnceleme sırasında GitHub v0.2.0 taslağındaki ZIP korundu: 32,935,917 bayt, SHA256 `F8B1A319B22CB5CA1DE3D51A4FB05893108FF25CB6CB086CF7BCF06C7F05DD20`. Bu ZIP teknik kabulü tamamlanmış paket değildir; sonraki yayın onayı ayrı karardır. Eski ayrı Windows ZIP'inin SHA256 değeri `2D1637B248909190149957CDB89DD9AA0BCEE8CBD9A7BB8B3454CBBE603B3ED8` olarak korundu. Bu inceleme anında yeni anonim indirme doğrulaması yapılmamıştı.
