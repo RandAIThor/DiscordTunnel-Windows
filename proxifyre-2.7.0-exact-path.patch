@@ -1,0 +1,28 @@
+diff --git a/docs/configuration.md b/docs/configuration.md
+index 49e5d08..333b105 100644
+--- a/docs/configuration.md
++++ b/docs/configuration.md
+@@ -88,3 +88,3 @@ Routing rules are evaluated from top to bottom. The first matching rule wins.
+ - A value containing neither `/` nor `\` matches the whole executable name, case-insensitively. `firefox` and `firefox.exe` match `firefox.exe`; `firefox` does not match `NewFirefox.exe`.
+-- A value containing `/` or `\` is matched as a substring of the process's full path. This is useful for applications installed beneath a variable package directory.
++- A value containing `/` or `\` must match the process's full executable path. Use a full path for each allowed executable.
+ - An explicit empty string (`""`) matches every application not already matched or excluded. Put this catch-all rule last because it shadows every later rule.
+diff --git a/netlib/src/proxy/process_routing_policy.h b/netlib/src/proxy/process_routing_policy.h
+index aef8b90..349f059 100644
+--- a/netlib/src/proxy/process_routing_policy.h
++++ b/netlib/src/proxy/process_routing_policy.h
+@@ -101,3 +101,3 @@ namespace proxy
+      *     by '.' (so a short pattern like "NOTE" does not match "EVILNOTE.EXE").
+-     *   - A PATH entry (contains '/' or '\\') matches as a SUBSTRING against the full path.
++     *   - A PATH entry (contains '/' or '\\') matches the full executable path exactly.
+      *   - An EMPTY entry ("") is the CATCH-ALL: it matches ANY process not in the exclusion list.
+@@ -133,3 +133,3 @@ namespace proxy
+         // Inputs are already uppercased by the caller. Path-form entries (containing a
+-        // separator) still use substring matching against the full path.
++        // separator) require an exact match against the full path.
+         const auto name_matches = [](const std::wstring& name, const std::wstring& entry)
+@@ -172,3 +172,3 @@ namespace proxy
+         return (app.find(L'\\') != std::wstring::npos || app.find(L'/') != std::wstring::npos)
+-                ? (process.path_name.find(app) != std::wstring::npos)
++                ? (process.path_name == app)
+                 : name_matches(process.name, app);
