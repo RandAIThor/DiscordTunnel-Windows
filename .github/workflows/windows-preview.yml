@@ -1,0 +1,27 @@
+name: Windows x64 preview
+
+on:
+  push:
+    branches: [first-run-profile-preview]
+
+permissions:
+  contents: read
+
+jobs:
+  preview:
+    runs-on: windows-2022
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and test preview
+        shell: powershell
+        run: |
+          .\Build.ps1 -PreviewPackage
+          $zip = Get-Item -LiteralPath 'dist/DiscordTunnel-0.2.1-preview.1-Windows-x64.zip'
+          $sha = (Get-FileHash -LiteralPath $zip.FullName -Algorithm SHA256).Hash
+          "$sha  $($zip.Name)" | Set-Content -LiteralPath 'dist/SHA256SUMS.txt' -Encoding ascii
+      - uses: actions/upload-artifact@v4
+        with:
+          name: DiscordTunnel-0.2.1-preview.1-Windows-x64
+          path: dist/*
+          if-no-files-found: error
