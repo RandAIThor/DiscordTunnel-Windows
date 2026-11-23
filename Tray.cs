@@ -55,7 +55,7 @@ namespace DiscordTunnelPrototype
             var menu = new ContextMenuStrip();
             status = new ToolStripMenuItem("Tünel kapalı");
             status.Click += (sender, args) => ShowStatus();
-            start = new ToolStripMenuItem(admin ? "Profil seç ve tüneli başlat" : "Tüneli başlat");
+            start = new ToolStripMenuItem("Profil seç ve tüneli başlat");
             start.Click += async (sender, args) => await Start();
             stop = new ToolStripMenuItem("Tüneli durdur");
             stop.Click += async (sender, args) => await Stop(false);
@@ -68,8 +68,34 @@ namespace DiscordTunnelPrototype
             icon.DoubleClick += (sender, args) => ShowStatus();
             NetworkChange.NetworkAddressChanged += NetworkChanged;
             UpdateMenu();
-            if (admin && startRequested)
-                dispatcher.BeginInvoke(new Action(async () => await Start()));
+            dispatcher.BeginInvoke(new Action(async () => await StartFromLaunch(startRequested)));
+        }
+
+        private async Task StartFromLaunch(bool startRequested)
+        {
+            if (busy || quitting)
+                return;
+            if (!startRequested)
+            {
+                DialogResult choice;
+                busy = true;
+                UpdateMenu();
+                try
+                {
+                    var next = admin ? "profil seçimi" : "Windows yönetici onayı ve profil seçimi";
+                    choice = MessageBox.Show(
+                        "Bağlanmak için kendi WireGuard (.conf) profilin gerekir. Devam ettiğinde " + next + " açılır.",
+                        "Discord Tunnel · Bağlantı kurulumu", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
+                }
+                finally
+                {
+                    busy = false;
+                    UpdateMenu();
+                }
+                if (choice != DialogResult.OK)
+                    return;
+            }
+            await Start();
         }
 
         private async Task Start()
@@ -85,7 +111,9 @@ namespace DiscordTunnelPrototype
                 }
                 catch (Win32Exception exception)
                 {
-                    SetStatus(exception.NativeErrorCode == 1223 ? "Windows yönetici onayı iptal edildi." : "Windows uygulamayı yönetici olarak açamadı.", true);
+                    ShowStartupFailure(exception.NativeErrorCode == 1223
+                        ? "Windows yönetici onayı iptal edildi."
+                        : "Windows uygulamayı yönetici olarak açamadı.");
                 }
                 return;
             }
@@ -139,7 +167,7 @@ namespace DiscordTunnelPrototype
                 DropEngine();
                 string message = exception is InvalidDataException || exception is TimeoutException ? exception.Message :
                     "Profil okunamadı veya sing-box çalıştırılamadı.";
-                SetStatus(message, true);
+                ShowStartupFailure(message);
             }
             finally
             {
@@ -326,6 +354,13 @@ namespace DiscordTunnelPrototype
         private void ShowStatus()
         {
             MessageBox.Show(status.Text, "Discord Tunnel", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void ShowStartupFailure(string message)
+        {
+            SetStatus(message, false);
+            MessageBox.Show(message, "Discord Tunnel · Bağlantı kurulamadı",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
         protected override void Dispose(bool disposing)
