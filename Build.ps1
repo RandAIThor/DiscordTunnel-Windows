@@ -1,9 +1,15 @@
-param([switch]$Test, [switch]$Diagnose, [Alias('PrototypeZip')][switch]$Package)
+param(
+    [switch]$Test, [switch]$Diagnose,
+    [Alias('PrototypeZip')][switch]$Package, [switch]$PreviewPackage
+)
 $ErrorActionPreference = 'Stop'
 
+if ($Package -and $PreviewPackage) { throw 'Tek bir paket türü seç.' }
 if ($Package) {
     . (Join-Path $PSScriptRoot 'ReleaseGate.ps1')
     Assert-FinalAcceptance
+}
+if ($Package -or $PreviewPackage) {
     $Test = $true
 }
 
@@ -81,13 +87,14 @@ if ($Test -or $Diagnose) {
     }
 }
 
-$documents = @('KURULUM.md','TASARIM-VE-TEST.md','FINAL-KABUL.md','THIRD-PARTY.md')
+$documents = @('KURULUM.md','ILK-BAGLANTI.md','TASARIM-VE-TEST.md','FINAL-KABUL.md','THIRD-PARTY.md')
 Copy-Item -LiteralPath ($documents | ForEach-Object { Join-Path $PSScriptRoot $_ }) -Destination $stage
-if ($Package) {
+if ($Package -or $PreviewPackage) {
     Add-Type -AssemblyName System.IO.Compression.FileSystem
     $distribution = Join-Path $PSScriptRoot 'dist'
     New-Item -ItemType Directory -Path $distribution -Force | Out-Null
-    $destination = Join-Path $distribution 'DiscordTunnel-0.2.0-Windows-x64.zip'
+    $packageVersion = if ($PreviewPackage) { '0.2.1-preview.1' } else { '0.2.1' }
+    $destination = Join-Path $distribution "DiscordTunnel-$packageVersion-Windows-x64.zip"
     $allowed = @('DiscordTunnel.exe') + $documents + @('engine/sing-box.exe','engine/libcronet.dll','engine/LICENSE','engine/COPYING')
     if (Test-Path -LiteralPath $destination) { throw 'Package already exists. Choose a new release version or move the earlier artifact.' }
     $zipArchive = [System.IO.Compression.ZipFile]::Open($destination, 'Create')
