@@ -1,0 +1,25 @@
+# Bağımsız Windows kurulumu ve Discord izolasyonu
+
+23 Kasım 2026 · **Üretim kabulü açık.** Taban `first-run-profile-preview` (`b8fd5a5`). Yayımlanmış `v0.2.0` (`5cc4dce)) ayrı tutuldu.
+
+## İlk bağlantı ve kayıt
+
+- SplitWire-Turkey, `WireGuardService.cs` içinde wgcf ikilisini GitHub'dan alıyor, `register --accept-tos` ardından `generate` çalıştırıyor ve profilin `AllowedApps` alanını WireSock için düzenliyor. Hata kodlarından sonra mevcut dosyalarla devam edebiliyor. Çıktı dosyasının varlığı yeni kayıt, el sıkışması veya bağlantı kanıtı sağlamaz. Projeden kod alınmadı. [Sabit kaynak](https://github.com/cagritaskn/SplitWire-Turkey/blob/766422ed8ca9cb5360e8d9d540e80722a0508efc/src/SplitWireTurkey/Services/WireGuardService.cs)
+- wgcf v2.3.1 güncel Windows x64 sürümü olarak GitHub API üzerinden doğrulandı. Üst proje wgcf'nin gayriresmî olduğunu belirtiyor. Sürüm notlarında API ve TLS parmak izi değişiklikleri, ayrıca yeni kayıtlarla IPv6 davranışına ilişkin açık saha bildirimi var. Yerel komut çalıştırıcısı kayıt deneyini başlatmadan engelledi. Bu makineye ait kayıt dönüş kodu, profil ve canlı WARP sonucu bulunmuyor. [wgcf](https://github.com/ViRb3/wgcf) · [Sürüm notları](https://github.com/ViRb3/wgcf/releases) · [IPv6 bildirimi](https://github.com/ViRb3/wgcf/issues/601)
+- Cloudflare'ın tüketici akışı kendi istemcisini kuruyor. Zero Trust otomasyonu kurum kimliği ve Cloudflare One Client gerektiriyor. Kayıt API'si mevcut kayıtları yönetiyor. Cloudflare One'ın bölünmüş tünel kuralları IP/alan adı temelli. Üçüncü taraf tüketici uygulamasına dağıtılabilir otomatik WARP kaydı yolu doğrulanamadı. [Tüketici kurulumu](https://developers.cloudflare.com/warp-client/get-started/windows/) · [Cihaz kaydı](https://developers.cloudflare.com/cloudflare-one/team-and-resources/devices/device-registration/) · [Kayıt API'si](https://developers.cloudflare.com/api/resources/zero_trust/subresources/devices/subresources/registrations/) · [Split Tunnels](https://developers.cloudflare.com/cloudflare-one/team-and-resources/devices/cloudflare-one-client/configure/route-traffic/split-tunnels/)
+
+## Motor ve izolasyon
+
+| Aday | Bulgular |
+| --- | --- |
+| Mevcut sing-box | `TunnelConfig.cs` Windows TUN'u `auto_route` ile açıyor, süreç yolu eşlemesini TUN sonrasında yapıyor ve varsayılan `direct` kullanıyor. Bu, Discord dışı akışın yakalama öncesinde kapsam dışında kalması şartını karşılamıyor. `FINAL-KABUL.md` süreç kimliği ve UDP sorununu da kaydediyor. |
+| WireSock | `AllowedApps` ile tam yol seçebiliyor. Standart istemci WireGuard profili ister. SDK EULA dağıtımı sıkı biçimde ticari olmayan ve SDK'nın ayrılabilir/açık biçimde sunulmadığı uygulamalarla sınırlar. Uygunluk seçilecek entegrasyona bağlıdır. Dış trafiğin motor veri yoluna girmediği bu depoda ölçülmedi ve uç kayıt sorunu açık. [Discord kılavuzu](https://wiresock.net/documentation/guide/split-tunneling-discord.html) · [SDK lisansı](https://wiresock.net/license/wiresock_sdk_eula) |
+| ProxiFyre | NDISAPI üzerinden uygulama bazlı TCP/UDP SOCKS5 yönlendirmesi sunuyor. Ulaşılabilir UDP destekli çıkış ve Windows Packet Filter gerekir. Discord dışı trafiğin yakalama yoluna girmediği doğrulanmadı. [ProxiFyre](https://github.com/wiresock/ProxiFyre) |
+| Seçici DPI | DPIGate, WinDivert FLOW ile sahiplik öğrenip paket döngüsünde eşleşmeyen paketleri yeniden enjekte ediyor. WinDivert'ın değişiklik yapılabilen NETWORK katmanı süreç kimliği sunmuyor. Diğer Discord odaklı GoodbyeDPI/Zapret örnekleri bağlantı ve RTC desteği bildiriyor, ancak süreç bazında önceden izolasyon ve hedef ağda ses/güncelleyici kabulü doğrulanmadı. DPI ayrıca erişim engelinin türüne bağlıdır. [DPIGate](https://github.com/MSelmanSonmez/DPIGate#how-it-works) · [WinDivert](https://reqrypt.org/windivert-doc.html#divert_layer) · [Discord DPI örneği](https://github.com/4anti/discord-bypass-turkey) |
+| WFP ALE | Windows, IP rotası değiştirmeden uygulama kimliğiyle TCP/UDP bağlantılarını seçip yönlendirebilen bir çağrı sürücüsü modelini belgeliyor. Bu, süreç seçiminde uygulanabilir bir tasarım adayı. İmzalı sürücü, Discord UDP/IPv6 ve güncelleyici doğrulaması ile çalışan veri yolu hâlâ gerekli. Tek başına uzak uç sağlamıyor. [Microsoft WFP filtre koşulları](https://learn.microsoft.com/en-us/windows/win32/fwp/filtering-conditions-available-at-each-filtering-layer) · [Bağlantı yönlendirme](https://learn.microsoft.com/en-us/windows-hardware/drivers/network/using-bind-or-connect-redirection) |
+
+## Kurulum, bağlantı ve kaldırma kanıtı
+
+Önceki önizleme denetiminde Windows 11 x64 derleme, sentetik süreç eşlemesi, IPv4/IPv6 WireGuard loopback TCP/UDP ve TUN olmadan motor kapanışı geçti. Bu dalın yeni bir kurulum veya motor uygulaması bulunmuyor. Bağımsız kurulum, yeni cihaz kaydı, uçtan uca Discord TCP/UDP/ses ve güncelleyici ile servis/ağ geri alma testleri çalıştırılmadı. Tarihsel testler için [önizleme kaydı](ILK-BAGLANTI.md) ve [kabul matrisi](RELEASE-ACCEPTANCE.json).
+
+Kayıt ve trafik izolasyonu birlikte doğrulanamadığından üretim Setup EXE'si oluşturulmadı. Ana dal ve v0.2.0 etiketi üzerinde değişiklik yapılmadı.
